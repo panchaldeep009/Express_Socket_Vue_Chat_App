@@ -12,6 +12,15 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/views/index.html');
 });
 
-http.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`app is running on port ${port}`);
 });
+
+io.attach(server);
+
+io.on('connection', (socket) => {
+    console.log('a User Connected');
+    socket.on('disconnect', () => {
+        console.log('a User disconnected');
+    })
+})
