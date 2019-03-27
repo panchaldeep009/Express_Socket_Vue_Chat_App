@@ -19,7 +19,16 @@ const server = app.listen(port, () => {
 io.attach(server);
 
 io.on('connection', (socket) => {
+    const sId = socket.id;
     console.log('a User Connected');
+    socket.emit('connected', {
+        sId,
+        message: 'new connection'
+    })
+    socket.on('chat message', (msg) => {
+        console.log(msg, socket.id);
+        io.emit('chat message', { id: socket.id, message: msg });
+    })
     socket.on('disconnect', () => {
         console.log('a User disconnected');
     })
