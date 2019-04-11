@@ -3,7 +3,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3300;
 
 // tell express where our static files are (js, images, css etc)
 app.use(express.static('public'));
@@ -16,20 +16,32 @@ const server = app.listen(port, () => {
     console.log(`app is running on port ${port}`);
 });
 
+let users = [];
+
 io.attach(server);
 
-io.on('connection', (socket) => {
-    const sId = socket.id;
-    console.log('a User Connected');
-    socket.emit('connected', {
-        sId,
-        message: 'new connection'
-    })
-    socket.on('chat message', (msg) => {
-        console.log(msg, socket.id);
-        io.emit('chat message', { id: socket.id, message: msg });
-    })
+io.on('connection', socket => {
+    socket.on('register user', name => {
+        if (!users.includes({ id: socket.id, name: name })) {
+            users = [...users, { id: socket.id, name: name }];
+        }
+        io.emit('update users', users);
+    });
+
+    socket.on('send message', ({ from, to, message, time, status }) => {
+        console.log(message);
+        if (to == socket.id || from == socket.id || to == 'all') {
+            io.emit('receive message', { from, to, message, time, status });
+        }
+    });
+
+    socket.on('unregister user', () => {
+        users = users.slice(0).filter(({ id }) => id !== socket.id);
+        io.emit('update users', users);
+    });
+
     socket.on('disconnect', () => {
-        console.log('a User disconnected');
-    })
-})
+        users = users.slice(0).filter(({ id }) => id !== socket.id);
+        io.emit('update users', users);
+    });
+});

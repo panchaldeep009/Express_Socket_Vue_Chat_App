@@ -1,31 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Socket IO Chat with Node!</title>
-	<link rel="stylesheet" href="css/main.css">
-	<script src="https://unpkg.com/vue"></script> 
-</head>
-<body>
-	<main id="app">		
-		<section class="form-container">
-			<label for="nickName">Your Nickname (optional)</label>
-			<input v-model="nickname" type="text" id="nickname" class="nickname" placeholder="What is your nickname?">
-			
-			<form>
-				<label for="message">Something to say?</label>
-				<textarea v-model="message" class="message" type="text" autocomplete="off" id="textarea"></textarea>
-				<input type="submit" @click.prevent="dispatchMessage">
-			</form>
-		</section>
-		
-		<section class="messages">
-			<ul id="messages" v-for="(message, index) in messages" :key="index" >
-				<newmessages :msg="message"></newmessages>
-			</ul>
-		</section>		
-	</main>
-	<script src="/socket.io/socket.io.js"></script>
-	<script type="module" src="js/main_vm.js"></script>
-</body>
+    <head>
+        <meta charset="utf-8" />
+        <title>Chat App</title>
+        <link
+            href="https://fonts.googleapis.com/css?family=Roboto"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css?family=Material+Icons"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div id="app"></div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="dist/build.js"></script>
+    </body>
 </html>
