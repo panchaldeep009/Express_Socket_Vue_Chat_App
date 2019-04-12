@@ -7,6 +7,7 @@
           :key="index"
           :class="messages.from == socket_id ? 'mine messages' : 'yours messages'"
         >
+          <span v-if="messages.from !== socket_id">{{userName(messages.from)}}</span>
           <template v-for="(message, msg_index) in messages.messages">
             <div
               :key="'msg'+msg_index"
@@ -18,17 +19,18 @@
       </div>
       <div ref="messageEnd"></div>
     </div>
-
-    <v-toolbar
-      dark
-      color="blue"
-      style="border-radius: 50px; margin: 20px; width: calc(100% - 40px)"
-    >
-      <v-text-field placeholder="Message" v-model="new_message"></v-text-field>
-      <v-btn icon @click="sendMessage">
-        <v-icon>send</v-icon>
-      </v-btn>
-    </v-toolbar>
+    <form @submit.prevent="sendMessage">
+      <v-toolbar
+        dark
+        color="blue"
+        style="border-radius: 50px; margin: 20px; width: calc(100% - 40px)"
+      >
+        <v-text-field placeholder="Message" v-model="new_message"></v-text-field>
+        <v-btn icon type="submit">
+          <v-icon>send</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </form>
   </div>
 </template>
 
@@ -59,9 +61,8 @@ export default {
         userName(s_id) {
             return this.$root.$data.users.find(({ id }) => s_id == id).name;
         },
-    },
-    watch: {
-        messages() {
+        groupedMsg() {
+            /// Filter Message
             const filterMessages = this.messages
                 .slice(0)
                 .filter(
@@ -70,6 +71,12 @@ export default {
                             (from == this.socket_id || to == this.socket_id)) ||
                         (to == 'all' && this.user.id == 'all'),
                 );
+            this.$root.$data.messages.forEach((msg, i, all) => {
+                if (filterMessages.includes(msg) && msg.status == 0) {
+                    all[i] = { ...msg, status: 1 };
+                }
+            });
+            /// Group the messages
             this.groupedMessage = [];
             filterMessages.forEach((msg, i, allMeg) => {
                 if (
@@ -95,7 +102,13 @@ export default {
             });
         },
     },
+    watch: {
+        messages() {
+            this.groupedMsg();
+        },
+    },
     mounted() {
+        this.groupedMsg();
         this.$root.$emit('change_title', this.user.name);
     },
 };

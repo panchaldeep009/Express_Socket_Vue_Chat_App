@@ -24,8 +24,9 @@ io.on('connection', socket => {
     socket.on('register user', name => {
         if (!users.includes({ id: socket.id, name: name })) {
             users = [...users, { id: socket.id, name: name }];
+            io.emit('new user', { id: socket.id, name: name });
+            io.emit('update users', users);
         }
-        io.emit('update users', users);
     });
 
     socket.on('send message', ({ from, to, message, time, status }) => {
@@ -33,13 +34,14 @@ io.on('connection', socket => {
             io.emit('receive message', { from, to, message, time, status });
         }
     });
-
     socket.on('unregister user', () => {
+        io.emit('remove user', users.find(({ id }) => id == socket.id));
         users = users.slice(0).filter(({ id }) => id !== socket.id);
         io.emit('update users', users);
     });
 
     socket.on('disconnect', () => {
+        io.emit('remove user', users.find(({ id }) => id == socket.id));
         users = users.slice(0).filter(({ id }) => id !== socket.id);
         io.emit('update users', users);
     });
