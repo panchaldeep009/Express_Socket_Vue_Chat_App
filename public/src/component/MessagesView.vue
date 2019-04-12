@@ -18,17 +18,18 @@
       </div>
       <div ref="messageEnd"></div>
     </div>
-
-    <v-toolbar
-      dark
-      color="blue"
-      style="border-radius: 50px; margin: 20px; width: calc(100% - 40px)"
-    >
-      <v-text-field placeholder="Message" v-model="new_message"></v-text-field>
-      <v-btn icon @click="sendMessage">
-        <v-icon>send</v-icon>
-      </v-btn>
-    </v-toolbar>
+    <form @submit.prevent="sendMessage">
+      <v-toolbar
+        dark
+        color="blue"
+        style="border-radius: 50px; margin: 20px; width: calc(100% - 40px)"
+      >
+        <v-text-field placeholder="Message" v-model="new_message"></v-text-field>
+        <v-btn icon type="submit">
+          <v-icon>send</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </form>
   </div>
 </template>
 
@@ -62,6 +63,7 @@ export default {
     },
     watch: {
         messages() {
+            /// Filter Message
             const filterMessages = this.messages
                 .slice(0)
                 .filter(
@@ -70,6 +72,8 @@ export default {
                             (from == this.socket_id || to == this.socket_id)) ||
                         (to == 'all' && this.user.id == 'all'),
                 );
+
+            /// Group the messages
             this.groupedMessage = [];
             filterMessages.forEach((msg, i, allMeg) => {
                 if (
