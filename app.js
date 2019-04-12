@@ -29,7 +29,6 @@ io.on('connection', socket => {
     });
 
     socket.on('send message', ({ from, to, message, time, status }) => {
-        console.log(message);
         if (to == socket.id || from == socket.id || to == 'all') {
             io.emit('receive message', { from, to, message, time, status });
         }

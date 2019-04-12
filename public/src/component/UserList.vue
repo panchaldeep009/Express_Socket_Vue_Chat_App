@@ -7,7 +7,10 @@
         </v-toolbar>
 
         <v-list two-line>
-          <v-list-tile avatar @click="$root.$emit('openMessages', 'all')">
+          <v-list-tile
+            avatar
+            @click="$root.$emit('openMessages', { id: 'all', name: 'Chat World'})"
+          >
             <v-list-tile-avatar color="blue">
               <v-icon dark>group</v-icon>
             </v-list-tile-avatar>
@@ -19,7 +22,7 @@
           <v-divider></v-divider>
           <v-subheader v-if="users.length == 0">No Users are connected</v-subheader>
           <template v-for="(user, index) in users">
-            <v-list-tile :key="user.id" avatar @click="$root.$emit('openMessages', user.id)">
+            <v-list-tile :key="user.id" avatar @click="$root.$emit('openMessages', user)">
               <v-list-tile-avatar color="red">
                 <span class="white--text headline">{{user.name.substring(1, 0)}}</span>
               </v-list-tile-avatar>

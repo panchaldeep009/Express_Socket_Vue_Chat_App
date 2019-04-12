@@ -7,10 +7,7 @@
         <v-card class="card--flex-toolbar">
           <v-toolbar color="blue" dark card prominent>
             <v-btn icon>
-              <v-icon
-                color="white"
-                @click="messagesOfUser = false"
-              >{{messagesOfUser ? 'arrow_back' : 'chat'}}</v-icon>
+              <v-icon color="white" @click="goBack">{{messagesOfUser ? 'arrow_back' : 'chat'}}</v-icon>
             </v-btn>
             <v-toolbar-title class="title">{{App}}</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -61,6 +58,10 @@ export default {
             this.avatar = false;
             this.$root.$data.socket.emit('unregister user');
         },
+        goBack() {
+            this.messagesOfUser = false;
+            this.$root.$emit('change_title', 'Welcome to ChatApp');
+        },
     },
     mounted() {
         this.$root.$on('change_title', title => {
@@ -92,5 +93,9 @@ export default {
 .chatBox {
     width: 100%;
     display: flex;
+}
+.v-avatar {
+    min-height: 48px;
+    min-width: 48px;
 }
 </style>
