@@ -41,7 +41,13 @@
     </v-card>
     <v-snackbar v-model="notification.show" bottom right :timeout="5000">
       {{ notification.text }}
-      <v-btn color="pink" flat @click="snackbar = false">Close</v-btn>
+      <v-btn
+        color="blue"
+        flat
+        v-if="notification.action !== false"
+        @click="notification.action"
+      >View</v-btn>
+      <v-btn color="yellow" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
   </div>
 </template>
@@ -61,6 +67,7 @@ export default {
             notification: {
                 show: false,
                 text: '',
+                action: false,
             },
         };
     },
@@ -87,10 +94,11 @@ export default {
         this.$root.$on('openMessages', user => {
             this.$root.$data.messagesOfUser = user;
         });
-        this.$root.$on('notify', text => {
+        this.$root.$on('notify', ({ text, action }) => {
             this.notification = {
                 show: true,
-                text,
+                text: text,
+                action: action,
             };
         });
     },

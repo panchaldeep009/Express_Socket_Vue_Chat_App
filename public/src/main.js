@@ -34,12 +34,18 @@ const vm = new Vue({
         });
         this.socket.addEventListener('new user', user => {
             if (this.socket.id !== user.id) {
-                this.$root.$emit('notify', `'${user.name}' is online`);
+                this.$root.$emit('notify', {
+                    text: `'${user.name}' is online`,
+                    action: false,
+                });
             }
         });
         this.socket.addEventListener('remove user', user => {
             if (user != null && this.socket.id !== user.id) {
-                this.$root.$emit('notify', `'${user.name}' is offline`);
+                this.$root.$emit('notify', {
+                    text: `'${user.name}' is offline`,
+                    action: false,
+                });
             }
         });
         this.socket.addEventListener('receive message', message => {
@@ -57,12 +63,17 @@ const vm = new Vue({
                     const userName = this.users.find(
                         ({ id }) => id == message.from,
                     ).name;
-                    this.$root.$emit(
-                        'notify',
-                        `New message from ${userName} ${
+                    this.$root.$emit('notify', {
+                        text: `New message from ${userName} ${
                             message.to == 'all' ? 'in ChatApp World' : 'to you'
                         }`,
-                    );
+                        action: () => {
+                            this.messagesOfUser = {
+                                id: message.from,
+                                name: userName,
+                            };
+                        },
+                    });
                 }
                 this.messages.push(message);
             }
