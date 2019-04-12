@@ -7,6 +7,7 @@
           :key="index"
           :class="messages.from == socket_id ? 'mine messages' : 'yours messages'"
         >
+          <span v-if="messages.from !== socket_id">{{userName(messages.from)}}</span>
           <template v-for="(message, msg_index) in messages.messages">
             <div
               :key="'msg'+msg_index"
@@ -60,9 +61,7 @@ export default {
         userName(s_id) {
             return this.$root.$data.users.find(({ id }) => s_id == id).name;
         },
-    },
-    watch: {
-        messages() {
+        groupedMsg() {
             /// Filter Message
             const filterMessages = this.messages
                 .slice(0)
@@ -99,7 +98,13 @@ export default {
             });
         },
     },
+    watch: {
+        messages() {
+            this.groupedMsg();
+        },
+    },
     mounted() {
+        this.groupedMsg();
         this.$root.$emit('change_title', this.user.name);
     },
 };

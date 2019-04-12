@@ -49,16 +49,19 @@ const vm = new Vue({
                 message.to == 'all'
             ) {
                 if (
-                    this.messagesOfUser !== message.from &&
-                    this.socket.id !== message.from
+                    (this.messagesOfUser.id !== 'all' && message.to == 'all') ||
+                    (this.messagesOfUser.id !== message.from &&
+                        this.socket.id !== message.from &&
+                        message.to !== 'all')
                 ) {
                     const userName = this.users.find(
                         ({ id }) => id == message.from,
                     ).name;
                     this.$root.$emit(
                         'notify',
-                        `New message from ${userName} ${message.to == 'all' &&
-                            'in ChatApp World'}`,
+                        `New message from ${userName} ${
+                            message.to == 'all' ? 'in ChatApp World' : 'to you'
+                        }`,
                     );
                 }
                 this.messages.push(message);

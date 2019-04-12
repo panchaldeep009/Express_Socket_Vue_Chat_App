@@ -1,5 +1,5 @@
 <template>
-  <div class="comp-content">
+  <form class="comp-content" @submit.prevent="changeNames">
     <v-card elevation="24" dark color="#26c6da" max-width="300" width="100%">
       <v-card-title>
         <v-icon large left>account_circle</v-icon>
@@ -11,10 +11,10 @@
           <span class="white--text headline">{{newName.length ? newName.substring(1, 0) : '*'}}</span>
         </v-avatar>
         <v-text-field label="Your Name" :value="name" v-model="newName"></v-text-field>
-        <v-btn outline large round color="white" @click="changeNames">Save</v-btn>
+        <v-btn outline large round color="white" type="submit">Save</v-btn>
       </v-layout>
     </v-card>
-  </div>
+  </form>
 </template>
 
 <script>
@@ -28,7 +28,9 @@ export default {
     },
     methods: {
         changeNames: function() {
-            this.$root.$emit('change_avatar', this.newName);
+            if (this.newName.length > 0) {
+                this.$root.$emit('change_avatar', this.newName);
+            }
         },
     },
     mounted() {
