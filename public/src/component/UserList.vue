@@ -9,14 +9,14 @@
         <v-list two-line>
           <v-list-tile
             avatar
-            @click="$root.$emit('openMessages', { id: 'all', name: 'Chat World'})"
+            @click="$root.$emit('openMessages', { id: 'all', name: 'ChatApp World'})"
           >
             <v-list-tile-avatar color="blue">
               <v-icon dark>group</v-icon>
             </v-list-tile-avatar>
             <v-list-tile-content>
               <v-list-tile-title>ChatApp World</v-list-tile-title>
-              <v-list-tile-sub-title>online</v-list-tile-sub-title>
+              <v-list-tile-sub-title>{{worldMassges()}}</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
           <v-divider></v-divider>
@@ -29,7 +29,7 @@
 
               <v-list-tile-content>
                 <v-list-tile-title>{{user.name}}</v-list-tile-title>
-                <v-list-tile-sub-title>online</v-list-tile-sub-title>
+                <v-list-tile-sub-title>{{sendStaus(user.id)}}</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
             <v-divider :key="index"></v-divider>
@@ -45,9 +45,30 @@ export default {
     name: 'userList',
     props: ['users'],
     data() {
-        return {};
+        return {
+            my_id: this.$root.$data.socket.id,
+        };
     },
-    methods: {},
+    methods: {
+        sendStaus(uID) {
+            const newMessages = this.$root.$data.messages
+                .slice(0)
+                .filter(
+                    message =>
+                        message.to == this.my_id &&
+                        message.from == uID &&
+                        message.status == 0,
+                ).length;
+            return newMessages > 0 ? newMessages + ' new messages' : 'online';
+        },
+        worldMassges() {
+            const newMessages = this.$root.$data.messages
+                .slice(0)
+                .filter(message => message.to == 'all' && message.status == 0)
+                .length;
+            return newMessages > 0 ? newMessages + ' new messages' : 'online';
+        },
+    },
     mounted() {},
 };
 </script>

@@ -71,7 +71,11 @@ export default {
                             (from == this.socket_id || to == this.socket_id)) ||
                         (to == 'all' && this.user.id == 'all'),
                 );
-
+            this.$root.$data.messages.forEach((msg, i, all) => {
+                if (filterMessages.includes(msg) && msg.status == 0) {
+                    all[i] = { ...msg, status: 1 };
+                }
+            });
             /// Group the messages
             this.groupedMessage = [];
             filterMessages.forEach((msg, i, allMeg) => {
